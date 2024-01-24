@@ -32,7 +32,6 @@ const dataObj = JSON.parse(data);
 
 // the code below will execute each a request is sent, so need to consider if some logic should be put outside, avoid blocking the flow, such as reading file
 const server = http.createServer((req, res) => {
-  // const pathName = req.url; // default is: /favicon.ico
   const myURL = new URL(req.url, `http://${req.headers.host}`);
   const pathName = myURL.pathname;
   const searchParams = myURL.searchParams;
@@ -53,7 +52,7 @@ const server = http.createServer((req, res) => {
     res.writeHead(200, {
       "Content-type": "text/html",
     });
-    const productId = searchParams.get("id");
+    const productId = searchParams.get("id"); //url pass params
     const product = dataObj[productId];
     const output = replaceTemplate(tempProduct, product);
     res.end(output);

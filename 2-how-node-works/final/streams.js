@@ -2,7 +2,8 @@ const fs = require("fs");
 const server = require("http").createServer();
 
 server.on("request", (req, res) => {
-  // Solution 1
+  //res本身就是一个可写流
+  // Solution 1 传统的读取方式，大文件就会要加载很久
   // fs.readFile("test-file.txt", (err, data) => {
   //   if (err) console.log(err);
   //   res.end(data);
@@ -10,11 +11,12 @@ server.on("request", (req, res) => {
 
   // Solution 2: Streams
   // const readable = fs.createReadStream("test-file.txt");
-  // readable.on("data", chunk => {
-  //   res.write(chunk);
+  // readable.on("data", chunk => { //可读流的事件-data
+  //   res.write(chunk); //可写流事件-write
+  //   //这个写法会导致一个问题：背压（back pressure）
   // });
-  // readable.on("end", () => {
-  //   res.end();
+  // readable.on("end", () => { //可读流的事件-end
+  //   res.end(); //可写流的事件-end
   // });
   // readable.on("error", err => {
   //   console.log(err);
@@ -24,8 +26,8 @@ server.on("request", (req, res) => {
 
   // Solution 3
   const readable = fs.createReadStream("test-file.txt");
-  readable.pipe(res);
-  // readableSource.pipe(writeableDest)
+  readable.pipe(res); //解决背压的问题
+  // readableSource.pipe(writeableDest) - 解释上面这一行代码的意义
 });
 
 server.listen(8000, "127.0.0.1", () => {
