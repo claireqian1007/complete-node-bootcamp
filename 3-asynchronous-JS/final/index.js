@@ -26,7 +26,7 @@ const getDogPic = async () => {
 
     const res1Pro = superagent.get(
       `https://dog.ceo/api/breed/${data}/images/random`
-    );
+    ); //http请求都可当作promise使用（虽然本质他不是promise）
     const res2Pro = superagent.get(
       `https://dog.ceo/api/breed/${data}/images/random`
     );
